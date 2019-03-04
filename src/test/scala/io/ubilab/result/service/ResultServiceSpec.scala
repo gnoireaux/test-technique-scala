@@ -16,7 +16,6 @@ class ResultServiceSpec extends FunSpec with Matchers {
   }
 
   describe("Après l'ajout d'un résultat,") {
-    pending
 
     val resultService = ResultService.build
 
@@ -38,7 +37,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir une liste de 1 résultat vue aprés la vision de ce résultat") {
-
+      pending
       resultService.seenResult(46)
       resultService.getAllResultSeen().length shouldEqual 1
       resultService.getAllResult().head.isSeen shouldEqual true
