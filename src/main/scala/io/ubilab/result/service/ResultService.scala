@@ -8,7 +8,7 @@ import scala.util.{Try,Success,Failure}
 class ResultService {
   private val results_store = ListBuffer[Result]()
 
-  def addResult(result:Result): Try[ListBuffer[Result]] = Try {results_store += result}
+  def addResult(result:Result): Try[ListBuffer[Result]] = Try(results_store += result)
 
 
   def seenResult(idResult:Int) =
