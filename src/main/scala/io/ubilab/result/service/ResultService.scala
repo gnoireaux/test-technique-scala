@@ -22,7 +22,11 @@ class ResultService {
       case None =>
     }
 
-  def unseenResult(idResult:Int) = ???
+  def unseenResult(idResult:Int) =
+    results_store.find(_.id==idResult) match {
+      case Some(value) => value.isSeen= false
+      case None =>
+    }
 
   def getAllResult:List[Result] = results_store.toList
 
