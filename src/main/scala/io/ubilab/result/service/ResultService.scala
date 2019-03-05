@@ -8,7 +8,12 @@ import scala.util.{Try,Success,Failure}
 class ResultService {
   private val results_store = ListBuffer[Result]()
 
-  def addResult(result:Result): Try[ListBuffer[Result]] = Try(results_store += result)
+  def addResult(result:Result): Try[ListBuffer[Result]] = Try {
+    results_store.exists(_.id == result.id) match {
+      case true => throw new IllegalArgumentException("A result already exists with the same id.")
+      case false => results_store += result
+    }
+  }
 
 
   def seenResult(idResult:Int) =
