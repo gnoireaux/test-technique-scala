@@ -94,21 +94,31 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
 
   describe("Step 4 : Après l'ajout de 3 résultats (events)") {
-    pending
-    // init le service avec 3 résultats
-    it("devrait avoir la list des résultat dans l'order de création ( en se basant sur les events de création)") {
+
+    val resultService = ResultService.build
+    val result_1 = Result(46, 76, List(42), false, Nil, "test")
+    val result_2 = result_1.copy(id = result_1.id + 1)
+    val result_3 = result_1.copy(id = result_1.id + 2)
+    resultService.addResult(result_1)
+    resultService.addResult(result_2)
+    resultService.addResult(result_3)
+
+    it("devrait avoir la liste des résultats dans l'ordre de création (en se basant sur les events de création)") {
       true shouldEqual false
     }
 
     it("devrait avoir 1 event a la date de maintenant quand 1 résultat est vue") {
+      pending
       true shouldEqual false
     }
 
     it("devrait avoir 2 events avec 2 dates différent après la vision d'un résultat puis la suppression de la vision") {
+      pending
       true shouldEqual false
     }
 
     it("devrait avoir une fonction qui retourne une liste ordonnée des résultats par rapport au dernier modifier") {
+      pending
       true shouldEqual false
     }
   }
