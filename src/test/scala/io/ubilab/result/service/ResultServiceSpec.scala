@@ -45,30 +45,33 @@ class ResultServiceSpec extends FunSpec with Matchers {
   }
 
   describe("Après l'ajout de 3 résultats,") {
-    pending
-    // init le service avec 3 resultats
 
     it("devrait avoir une liste de 3 resultats non vue aprés l'ajout de 3 resultat.") {
       true shouldEqual false
     }
 
-    it("ne devrait pas authorisé l'ajout d'un résultats avec un id existant") {
+    it("ne devrait pas autoriser l'ajout d'un résultats avec un id existant") {
+      pending
       true shouldEqual false
     }
 
-    it("devrait avoir 1 resultats vue dans la liste aprés la vision d'un resultat") {
+    it("devrait avoir 1 résultats vue dans la liste après la vision d'un résultat") {
+      pending
       true shouldEqual false
     }
 
-    it("devrait avoir les 3 resultats vue dans la liste aprés qu'il soit tous vue") {
+    it("devrait avoir les 3 résultats vue dans la liste après qu'il soit tous vue") {
+      pending
       true shouldEqual false
     }
 
-    it("devrait avoir plus que 2 resultats vue dans la liste aprés qu'il soit tous vue puis 1 ou la vue est enlevé") {
+    it("devrait avoir plus que 2 résultats vue dans la liste après qu'il soit tous vue puis 1 ou la vue est enlevé") {
+      pending
       true shouldEqual false
     }
 
-    it("ne devrait pas planté aprés la vision d\\'un resultat non ajouté") {
+    it("ne devrait pas planter après la vision d\\'un résultat non ajouté") {
+      pending
       true shouldEqual false
     }
 
@@ -77,7 +80,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
   describe("Après l'ajout de 3 résultats,") {
     pending
-    // init le service avec 3 resultats
+    // init le service avec 3 résultats
     it("devrait avoir la list des résultat dans l'order de création ( en se basant sur les events de création)") {
       true shouldEqual false
     }
@@ -86,11 +89,11 @@ class ResultServiceSpec extends FunSpec with Matchers {
       true shouldEqual false
     }
 
-    it("devrait avoir 2 events avec 2 dates différent aprés la vision d'un resultat puis la suppression de la vision") {
+    it("devrait avoir 2 events avec 2 dates différent après la vision d'un résultat puis la suppression de la vision") {
       true shouldEqual false
     }
 
-    it("devrait avoir une fonction qui retourne une liste ordonnée des resultats par rapport au dernier modifier") {
+    it("devrait avoir une fonction qui retourne une liste ordonnée des résultats par rapport au dernier modifier") {
       true shouldEqual false
     }
   }
