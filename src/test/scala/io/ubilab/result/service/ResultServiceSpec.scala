@@ -64,9 +64,9 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.addResult(a_result.copy(id = a_result.id)) shouldBe a[Failure[_]] // sameness of id is explicit!
     }
 
-    it("devrait avoir 1 résultats vue dans la liste après la vision d'un résultat") {
-      pending
-      true shouldEqual false
+    it("devrait avoir 1 résultat vu dans la liste après la vision d'un résultat") {
+      resultService.seenResult(46)
+      resultService.getAllResultSeen.length shouldEqual 1
     }
 
     it("devrait avoir les 3 résultats vue dans la liste après qu'il soit tous vue") {
