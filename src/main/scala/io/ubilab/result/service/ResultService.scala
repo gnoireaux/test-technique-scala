@@ -18,12 +18,12 @@ class ResultService {
 
   def unseenResult(idResult:Int) = ???
 
-  def getAllResult():List[Result] = results_store.toList
+  def getAllResult:List[Result] = results_store.toList
 
-  def getAllResultSeen():List[Result] =
+  def getAllResultSeen:List[Result] =
     results_store.filter(_.isSeen).toList
 
-  def getAllResultUnSeen():List[Result] = ???
+  def getAllResultUnSeen:List[Result] = ???
 
   def numberOfEventSeen:Int =  ???
 }

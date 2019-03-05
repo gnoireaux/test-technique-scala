@@ -5,7 +5,7 @@ import org.scalatest.{FunSpec, Matchers}
 
 class ResultServiceSpec extends FunSpec with Matchers {
 
-  describe("Step 1 : initialisation du projet avec 0 et 1 resultat") {
+  describe("Step 1 : initialisation du projet avec 0 et 1 résultat") {
 
     val resultService = ResultService.build
 
@@ -30,16 +30,16 @@ class ResultServiceSpec extends FunSpec with Matchers {
       )
     )
 
-    it("devrait avoir une liste de 1 résultat non vue") {
+    it("devrait avoir une liste de 1 résultat non vu") {
 
       resultService.getAllResult.length shouldEqual 1
 
     }
 
-    it("devrait avoir une liste de 1 résultat vue aprés la vision de ce résultat") {
+    it("devrait avoir une liste de 1 résultat vu après la vision de ce résultat") {
       resultService.seenResult(46)
-      resultService.getAllResultSeen().length shouldEqual 1
-      resultService.getAllResult().head.isSeen shouldEqual true
+      resultService.getAllResultSeen.length shouldEqual 1
+      resultService.getAllResult.head.isSeen shouldEqual true
     }
 
   }
