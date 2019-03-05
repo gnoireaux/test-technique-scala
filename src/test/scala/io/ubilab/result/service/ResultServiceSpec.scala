@@ -18,7 +18,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
   }
 
-  describe("Après l'ajout d'un résultat,") {
+  describe("Step 2 : Après l'ajout d'un résultat,") {
 
     val resultService = ResultService.build
 
@@ -47,7 +47,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
   }
 
-  describe("Après l'ajout de 3 résultats,") {
+  describe("Step 3 : Après l'ajout de 3 résultats,") {
 
     // init le service avec 3 résultats
     val resultService = ResultService.build
@@ -86,14 +86,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("ne devrait pas planter après la vision d\\'un résultat non ajouté") {
-      pending
-      true shouldEqual false
+      val notAddedResult = result_1.copy(id = result_1.id + 42)
+      noException should be thrownBy resultService.seenResult(notAddedResult.id)
     }
 
   }
 
 
-  describe("Après l'ajout de 3 résultats,") {
+  describe("Step 4 : Après l'ajout de 3 résultats (events)") {
     pending
     // init le service avec 3 résultats
     it("devrait avoir la list des résultat dans l'order de création ( en se basant sur les events de création)") {
