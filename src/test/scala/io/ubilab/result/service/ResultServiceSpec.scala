@@ -69,9 +69,11 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.getAllResultSeen.length shouldEqual 1
     }
 
-    it("devrait avoir les 3 résultats vue dans la liste après qu'il soit tous vue") {
-      pending
-      true shouldEqual false
+    it("devrait avoir les 3 résultats vus dans la liste après qu'ils soient tous vus.") {
+      resultService.seenResult(46)
+      resultService.seenResult(47)
+      resultService.seenResult(48)
+      resultService.getAllResultSeen.length shouldEqual 3
     }
 
     it("devrait avoir plus que 2 résultats vue dans la liste après qu'il soit tous vue puis 1 ou la vue est enlevé") {
