@@ -51,28 +51,30 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     // init le service avec 3 résultats
     val resultService = ResultService.build
-    val a_result = Result(46, 76, List(42), false, Nil, "test")
-    resultService.addResult(a_result)
-    resultService.addResult(a_result.copy(id = a_result.id + 1))
-    resultService.addResult(a_result.copy(id = a_result.id + 2))
+    val result_1 = Result(46, 76, List(42), false, Nil, "test")
+    val result_2 = result_1.copy(id = result_1.id + 1)
+    val result_3 = result_1.copy(id = result_1.id + 2)
+    resultService.addResult(result_1)
+    resultService.addResult(result_2)
+    resultService.addResult(result_3)
 
     it("devrait avoir une liste de 3 résultats non vus après l'ajout de 3 résultats.") {
       resultService.getAllResultUnSeen.length shouldEqual 3
     }
 
     it("ne devrait pas autoriser l'ajout d'un résultat avec un id existant") {
-      resultService.addResult(a_result.copy(id = a_result.id)) shouldBe a[Failure[_]] // sameness of id is explicit!
+      resultService.addResult(result_1.copy(id = result_1.id)) shouldBe a[Failure[_]] // sameness of id is explicit!
     }
 
     it("devrait avoir 1 résultat vu dans la liste après la vision d'un résultat") {
-      resultService.seenResult(46)
+      resultService.seenResult(result_1.id)
       resultService.getAllResultSeen.length shouldEqual 1
     }
 
     it("devrait avoir les 3 résultats vus dans la liste après qu'ils soient tous vus.") {
-      resultService.seenResult(46)
-      resultService.seenResult(47)
-      resultService.seenResult(48)
+      resultService.seenResult(result_1.id)
+      resultService.seenResult(result_2.id)
+      resultService.seenResult(result_3.id)
       resultService.getAllResultSeen.length shouldEqual 3
     }
 
