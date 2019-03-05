@@ -3,6 +3,9 @@ package io.ubilab.result.service
 import io.ubilab.result.model.Result
 import org.scalatest.{FunSpec, Matchers}
 
+import scala.collection.mutable.ListBuffer
+import scala.util.{Failure, Success, Try}
+
 class ResultServiceSpec extends FunSpec with Matchers {
 
   describe("Step 1 : initialisation du projet avec 0 et 1 résultat") {
@@ -57,9 +60,8 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.getAllResultUnSeen.length shouldEqual 3
     }
 
-    it("ne devrait pas autoriser l'ajout d'un résultats avec un id existant") {
-      pending
-      true shouldEqual false
+    it("ne devrait pas autoriser l'ajout d'un résultat avec un id existant") {
+      resultService.addResult(a_result.copy(id = a_result.id)) shouldBe a[Failure[ListBuffer[Result]]]
     }
 
     it("devrait avoir 1 résultats vue dans la liste après la vision d'un résultat") {
