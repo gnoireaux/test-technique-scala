@@ -23,7 +23,8 @@ class ResultService {
   def getAllResultSeen:List[Result] =
     results_store.filter(_.isSeen).toList
 
-  def getAllResultUnSeen:List[Result] = ???
+  def getAllResultUnSeen:List[Result] =
+    results_store.filter(!_.isSeen).toList
 
   def numberOfEventSeen:Int =  ???
 }

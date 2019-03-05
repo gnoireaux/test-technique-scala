@@ -46,8 +46,15 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
   describe("Après l'ajout de 3 résultats,") {
 
-    it("devrait avoir une liste de 3 resultats non vue aprés l'ajout de 3 resultat.") {
-      true shouldEqual false
+    // init le service avec 3 résultats
+    val resultService = ResultService.build
+    val a_result = Result(46, 76, List(42), false, Nil, "test")
+    resultService.addResult(a_result)
+    resultService.addResult(a_result.copy(id = a_result.id + 1))
+    resultService.addResult(a_result.copy(id = a_result.id + 2))
+
+    it("devrait avoir une liste de 3 résultats non vus après l'ajout de 3 résultats.") {
+      resultService.getAllResultUnSeen.length shouldEqual 3
     }
 
     it("ne devrait pas autoriser l'ajout d'un résultats avec un id existant") {
