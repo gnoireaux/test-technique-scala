@@ -61,7 +61,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("ne devrait pas autoriser l'ajout d'un résultat avec un id existant") {
-      resultService.addResult(a_result.copy(id = a_result.id)) shouldBe a[Failure[_]]
+      resultService.addResult(a_result.copy(id = a_result.id)) shouldBe a[Failure[_]] // sameness of id is explicit!
     }
 
     it("devrait avoir 1 résultats vue dans la liste après la vision d'un résultat") {
