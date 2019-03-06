@@ -117,9 +117,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
       event.createdAt.getTime shouldBe (new java.util.Date()).getTime +- 1000
     }
 
-    it("devrait avoir 2 events avec 2 dates différent après la vision d'un résultat puis la suppression de la vision") {
-      pending
-      true shouldEqual false
+    it("devrait avoir 2 events avec 2 dates différentes après la vision d'un résultat puis la suppression de la vision") {
+      resultService.unseenResult(result_1.id)
+      resultService.getAllResultSeen.length shouldEqual 0
+      val seen_event = result_1.seenStateEvents.head
+      val unseen_event = result_1.seenStateEvents.last
+      seen_event shouldBe a[Seen]
+      unseen_event shouldBe a[Unseen]
+      seen_event.createdAt shouldNot be theSameInstanceAs unseen_event.createdAt
     }
 
     it("devrait avoir une fonction qui retourne une liste ordonnée des résultats par rapport au dernier modifier") {
