@@ -28,7 +28,7 @@ class ResultService {
       case None =>
     }
 
-  def getAllResult:List[Result] = results_store.toList
+  def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
 
   def getAllResultSeen:List[Result] =
     results_store.filter(_.isSeen).toList

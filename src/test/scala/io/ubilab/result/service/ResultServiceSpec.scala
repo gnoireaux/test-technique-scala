@@ -1,6 +1,6 @@
 package io.ubilab.result.service
 
-import io.ubilab.result.model.Result
+import io.ubilab.result.model.{Created, Result}
 import org.scalatest.{FunSpec, Matchers}
 
 import scala.collection.mutable.ListBuffer
@@ -28,7 +28,6 @@ class ResultServiceSpec extends FunSpec with Matchers {
         76,
         List(42),
         false,
-        Nil,
         "test"
       )
     )
@@ -51,7 +50,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     // init le service avec 3 résultats
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), false, Nil, "test")
+    val result_1 = Result(46, 76, List(42), false, "test")
     val result_2 = result_1.copy(id = result_1.id + 1)
     val result_3 = result_1.copy(id = result_1.id + 2)
     resultService.addResult(result_1)
@@ -94,17 +93,20 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
 
   describe("Step 4 : Après l'ajout de 3 résultats (events)") {
+    val thursday = Created(0, new java.util.Date(0, 1, 1))
+    val friday = Created(0, new java.util.Date(0, 1, 2))
+    val saturday = Created(0, new java.util.Date(0, 1, 3))
 
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), false, Nil, "test")
-    val result_2 = result_1.copy(id = result_1.id + 1)
-    val result_3 = result_1.copy(id = result_1.id + 2)
-    resultService.addResult(result_1)
-    resultService.addResult(result_2)
+    val result_1 = Result(46, 76, List(42), false, "test", created = thursday)
+    val result_2 = result_1.copy(id = result_1.id + 1, created = friday)
+    val result_3 = result_1.copy(id = result_1.id + 2, created = saturday)
     resultService.addResult(result_3)
+    resultService.addResult(result_2)
+    resultService.addResult(result_1)
 
     it("devrait avoir la liste des résultats dans l'ordre de création (en se basant sur les events de création)") {
-      true shouldEqual false
+      resultService.getAllResult shouldEqual List(result_1, result_2, result_3)
     }
 
     it("devrait avoir 1 event a la date de maintenant quand 1 résultat est vue") {
@@ -120,6 +122,15 @@ class ResultServiceSpec extends FunSpec with Matchers {
     it("devrait avoir une fonction qui retourne une liste ordonnée des résultats par rapport au dernier modifier") {
       pending
       true shouldEqual false
+    }
+  }
+
+  describe( "Result") {
+    it("should from the start have a creation event") {
+      val result = Result(46, 76, List(42), false, "test")
+      result.created shouldBe a[Created]
+      result.events.length shouldEqual 1
+      result.events.head shouldBe a[Created]
     }
   }
 
