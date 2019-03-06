@@ -20,7 +20,6 @@ class ResultService {
     results_store.find(_.id==idResult) match {
       case Some(value) => {
         value.seenStateEvents += Seen(0, new java.util.Date())
-        value.isSeen= true
       }
       case None =>
     }
@@ -29,7 +28,6 @@ class ResultService {
     results_store.find(_.id==idResult) match {
       case Some(value) => {
         value.seenStateEvents += Unseen(0, new java.util.Date())
-        value.isSeen= false
       }
       case None =>
     }

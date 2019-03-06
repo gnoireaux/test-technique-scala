@@ -26,7 +26,6 @@ class ResultServiceSpec extends FunSpec with Matchers {
         46,
         76,
         List(42),
-        false,
         "test"
       )
     )
@@ -49,7 +48,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     // init le service avec 3 résultats
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), false, "test")
+    val result_1 = Result(46, 76, List(42), "test")
     val result_2 = result_1.copy(id = result_1.id + 1)
     val result_3 = result_1.copy(id = result_1.id + 2)
     resultService.addResult(result_1)
@@ -97,7 +96,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     val saturday = Created(0, new java.util.Date(0, 1, 3))
 
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), false, "test", created = thursday)
+    val result_1 = Result(46, 76, List(42), "test", created = thursday)
     val result_2 = result_1.copy(id = result_1.id + 1, created = friday)
     val result_3 = result_1.copy(id = result_1.id + 2, created = saturday)
     resultService.addResult(result_3)
@@ -135,13 +134,12 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
   describe( "Result") {
     it("should from the start have a creation event") {
-      val result = Result(46, 76, List(42), false, "test")
+      val result = Result(46, 76, List(42), "test")
       result.created shouldBe a[Created]
       result.events.length shouldEqual 1
       result.events.head shouldBe a[Created]
     }
   }
-
 
   describe("N'hésitez pas a proposer de nouveaux tests") {}
 }

@@ -18,13 +18,21 @@ final case class Unseen(idOwner: Int, createdAt: Date) extends EventResult with 
 case class Result(id:              Int,
                   idOwner:         Int,
                   idRecipients:    List[Int],
-                  var isSeen:          Boolean, // var hurts
                   contentOfResult: String,
                   created:         Created = Created(0, new java.util.Date()),
-                  var received:    Option[Received] = None,
-                  seenStateEvents: ListBuffer[SeenStateEvent] = ListBuffer[SeenStateEvent]()) {
+                  var received:    Option[Received] = None) {
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // ListBuffer created as default value for an arg in case class' constructor :
+  //              objects share the same instance !
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  private val     _seenStateEvents = ListBuffer[SeenStateEvent]()
+  def             seenStateEvents: ListBuffer[SeenStateEvent] = _seenStateEvents
   def             events:          List[EventResult] = (received match {
     case Some(received) => List[EventResult](created, received)
     case None => List[EventResult](created)
   }) ++ seenStateEvents.toList.asInstanceOf[List[EventResult]]
+  def             isSeen:          Boolean = seenStateEvents.lastOption match {
+    case Some(event)  => event.isInstanceOf[Seen]
+    case None => false
+  }
 }
