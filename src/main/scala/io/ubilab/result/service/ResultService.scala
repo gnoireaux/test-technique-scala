@@ -1,9 +1,9 @@
 package io.ubilab.result.service
 
-import io.ubilab.result.model.Result
+import io.ubilab.result.model.{Result, Seen}
 
 import scala.collection.mutable.ListBuffer
-import scala.util.{Try,Success,Failure}
+import scala.util.{Failure, Success, Try}
 
 class ResultService {
   private val results_store = ListBuffer[Result]()
@@ -18,7 +18,10 @@ class ResultService {
 
   def seenResult(idResult:Int) =
     results_store.find(_.id==idResult) match {
-      case Some(value) => value.isSeen= true
+      case Some(value) => {
+        value.seenStateEvents += Seen(0, new java.util.Date())
+        value.isSeen= true
+      }
       case None =>
     }
 

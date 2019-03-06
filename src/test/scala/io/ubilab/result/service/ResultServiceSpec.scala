@@ -1,9 +1,8 @@
 package io.ubilab.result.service
 
-import io.ubilab.result.model.{Created, Result}
+import io.ubilab.result.model._
 import org.scalatest.{FunSpec, Matchers}
 
-import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
 class ResultServiceSpec extends FunSpec with Matchers {
@@ -109,9 +108,13 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.getAllResult shouldEqual List(result_1, result_2, result_3)
     }
 
-    it("devrait avoir 1 event a la date de maintenant quand 1 résultat est vue") {
-      pending
-      true shouldEqual false
+    it("devrait avoir 1 event a la date de maintenant quand 1 résultat est vu.") {
+      resultService.seenResult(result_1.id)
+      resultService.getAllResultSeen.length shouldEqual 1
+      resultService.getAllResultSeen.head.isSeen shouldEqual true
+      val event: SeenStateEvent = resultService.getAllResultSeen.head.seenStateEvents.last
+      event shouldBe a[Seen]
+      event.createdAt.getTime shouldBe (new java.util.Date()).getTime +- 1000
     }
 
     it("devrait avoir 2 events avec 2 dates différent après la vision d'un résultat puis la suppression de la vision") {
