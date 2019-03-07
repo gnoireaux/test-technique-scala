@@ -15,10 +15,19 @@ class ResultService {
     }
   }
 
-  def seenResult(result: Result, viewerId: ViewerId): Unit = seenResult(ResultId(result.id), viewerId)
-  def seenResult(result_id: ResultId, viewerId: ViewerId): Unit =
+  def seenResult(result: Result, viewerId: ViewerId): Try[Unit] = seenResult(ResultId(result.id), viewerId)
+  def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] = Try {
     results_store.find(_.id==result_id.id)
-      .foreach(_.seenStateEvents += Seen(viewerId.id, new java.util.Date()))
+      .foreach(
+        result => result.idRecipients.find(_ == viewerId.id) match {
+          case Some(_) => result.seenStateEvents += Seen(viewerId.id, new java.util.Date())
+          case None => {
+            println(s"Viewer ${viewerId.id} tried to access result $result_id while not being a recipient.")
+            throw new IllegalArgumentException("Viewer is not a recipient.")
+          }
+        }
+      )
+  }
 
   def unseenResult(idResult:Int) =
     results_store.find(_.id==idResult).foreach(_.seenStateEvents += Unseen(0, new java.util.Date()))

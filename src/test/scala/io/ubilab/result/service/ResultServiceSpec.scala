@@ -133,6 +133,13 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.getAllResultsLastModified shouldEqual List(result_2, result_3, result_1)
     }
 
+    it("should verify that the viewer is a recipient: not add the event and fail") {
+      val viewerId_not_recipient = ViewerId(999)
+      resultService.numberOfEventSeen shouldEqual 1
+      resultService.seenResult(result_1, viewerId_not_recipient) shouldBe a[Failure[_]]
+      resultService.numberOfEventSeen shouldEqual 1
+    }
+
     it("should count the number of Seen events") {
       resultService.numberOfEventSeen shouldEqual 1
       resultService.seenResult(result_1, ViewerId(42))
