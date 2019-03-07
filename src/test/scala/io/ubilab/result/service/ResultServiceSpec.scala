@@ -126,9 +126,10 @@ class ResultServiceSpec extends FunSpec with Matchers {
       seen_event.createdAt shouldNot be theSameInstanceAs unseen_event.createdAt
     }
 
-    it("devrait avoir une fonction qui retourne une liste ordonnée des résultats par rapport au dernier modifier") {
-      pending
-      true shouldEqual false
+    it("devrait avoir une fonction qui retourne une liste ordonnée des résultats par rapport au derniers modifiés") {
+      // without more information about how the data will be consumed,
+      // I chose to order from older to newer modification.
+      resultService.getAllResultsLastModified shouldEqual List(result_2, result_3, result_1)
     }
   }
 

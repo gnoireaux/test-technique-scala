@@ -23,6 +23,8 @@ class ResultService {
 
   def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
 
+  def getAllResultsLastModified:List[Result] = results_store.sortBy(_.events.last.createdAt).toList
+
   def getAllResultSeen:List[Result] =
     results_store.filter(_.isSeen).toList
 
