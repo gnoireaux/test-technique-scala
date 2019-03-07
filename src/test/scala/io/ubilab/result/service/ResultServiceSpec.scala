@@ -131,6 +131,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
       // I chose to order from older to newer modification.
       resultService.getAllResultsLastModified shouldEqual List(result_2, result_3, result_1)
     }
+
+    it("should count the number of Seen events") {
+      resultService.numberOfEventSeen shouldEqual 1
+      resultService.seenResult(result_1.id)
+      resultService.numberOfEventSeen shouldEqual 2
+      resultService.seenResult(result_2.id)
+      resultService.numberOfEventSeen shouldEqual 3
+    }
   }
 
   describe( "Result") {
