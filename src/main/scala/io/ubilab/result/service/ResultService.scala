@@ -15,22 +15,11 @@ class ResultService {
     }
   }
 
-
   def seenResult(idResult:Int) =
-    results_store.find(_.id==idResult) match {
-      case Some(value) => {
-        value.seenStateEvents += Seen(0, new java.util.Date())
-      }
-      case None =>
-    }
+    results_store.find(_.id==idResult).foreach(_.seenStateEvents += Seen(0, new java.util.Date()))
 
   def unseenResult(idResult:Int) =
-    results_store.find(_.id==idResult) match {
-      case Some(value) => {
-        value.seenStateEvents += Unseen(0, new java.util.Date())
-      }
-      case None =>
-    }
+    results_store.find(_.id==idResult).foreach(_.seenStateEvents += Unseen(0, new java.util.Date()))
 
   def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
 
