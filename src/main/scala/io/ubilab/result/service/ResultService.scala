@@ -1,6 +1,6 @@
 package io.ubilab.result.service
 
-import io.ubilab.result.model.{Result, Seen, Unseen}
+import io.ubilab.result.model._
 
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
@@ -15,8 +15,9 @@ class ResultService {
     }
   }
 
-  def seenResult(idResult:Int) =
-    results_store.find(_.id==idResult).foreach(_.seenStateEvents += Seen(0, new java.util.Date()))
+  def seenResult(result: Result): Unit = seenResult(ResultId(result.id))
+  def seenResult(result_id: ResultId): Unit =
+    results_store.find(_.id==result_id.idResult).foreach(_.seenStateEvents += Seen(0, new java.util.Date()))
 
   def unseenResult(idResult:Int) =
     results_store.find(_.id==idResult).foreach(_.seenStateEvents += Unseen(0, new java.util.Date()))

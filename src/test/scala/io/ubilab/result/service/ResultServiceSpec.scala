@@ -20,15 +20,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
   describe("Step 2 : Après l'ajout d'un résultat,") {
 
     val resultService = ResultService.build
-
-    resultService.addResult(
-      Result(
-        46,
-        76,
-        List(42),
-        "test"
-      )
+    val result = Result(
+      46,
+      76,
+      List(42),
+      "test"
     )
+
+    resultService.addResult(result)
 
     it("devrait avoir une liste de 1 résultat non vu") {
 
@@ -37,7 +36,9 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir une liste de 1 résultat vu après la vision de ce résultat") {
-      resultService.seenResult(46)
+      // keep testing the method taking an Id
+      // because stable APIs are nice
+      resultService.seenResult(ResultId(result.id))
       resultService.getAllResultSeen.length shouldEqual 1
       resultService.getAllResult.head.isSeen shouldEqual true
     }
@@ -64,14 +65,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 1 résultat vu dans la liste après la vision d'un résultat") {
-      resultService.seenResult(result_1.id)
+      resultService.seenResult(result_1)
       resultService.getAllResultSeen.length shouldEqual 1
     }
 
     it("devrait avoir les 3 résultats vus dans la liste après qu'ils soient tous vus.") {
-      resultService.seenResult(result_1.id)
-      resultService.seenResult(result_2.id)
-      resultService.seenResult(result_3.id)
+      resultService.seenResult(result_1)
+      resultService.seenResult(result_2)
+      resultService.seenResult(result_3)
       resultService.getAllResultSeen.length shouldEqual 3
     }
 
@@ -84,7 +85,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     it("ne devrait pas planter après la vision d\\'un résultat non ajouté") {
       val notAddedResult = result_1.copy(id = result_1.id + 42)
-      noException should be thrownBy resultService.seenResult(notAddedResult.id)
+      noException should be thrownBy resultService.seenResult(notAddedResult)
     }
 
   }
@@ -106,7 +107,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 1 event a la date de maintenant quand 1 résultat est vu.") {
-      resultService.seenResult(result_1.id)
+      resultService.seenResult(result_1)
       resultService.getAllResultSeen.length shouldEqual 1
       resultService.getAllResultSeen.head.isSeen shouldEqual true
       val event: SeenStateEvent = resultService.getAllResultSeen.head.seenStateEvents.last
@@ -132,9 +133,9 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     it("should count the number of Seen events") {
       resultService.numberOfEventSeen shouldEqual 1
-      resultService.seenResult(result_1.id)
+      resultService.seenResult(result_1)
       resultService.numberOfEventSeen shouldEqual 2
-      resultService.seenResult(result_2.id)
+      resultService.seenResult(result_2)
       resultService.numberOfEventSeen shouldEqual 3
     }
   }

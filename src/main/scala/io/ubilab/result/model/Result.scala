@@ -4,6 +4,7 @@ import java.util.Date
 
 import scala.collection.mutable.ListBuffer
 
+case class ResultId(idResult: Int)
 
 sealed trait EventResult {
   def idOwner: Int
