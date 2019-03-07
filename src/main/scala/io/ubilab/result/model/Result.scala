@@ -5,6 +5,7 @@ import java.util.Date
 import scala.collection.mutable.ListBuffer
 
 case class ResultId(idResult: Int)
+case class ViewerId(id: Int) // would probably not exist in a real system, but I've got to stop somewhere, scope-wise
 
 sealed trait EventResult {
   def idOwner: Int
