@@ -32,7 +32,7 @@ class ResultService {
     results_store.filter(!_.isSeen).toList
 
   def numberOfEventSeen:Int =
-    results_store.flatMap(r => r.seenStateEvents.flatMap({case s: Seen => Some(s) case u: Unseen => None})).length
+    (results_store.map(_.seenStateEvents.count(_.isInstanceOf[Seen]))).sum
 }
 
 object ResultService {
