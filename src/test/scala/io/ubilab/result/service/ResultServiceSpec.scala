@@ -20,6 +20,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
   describe("Step 2 : Après l'ajout d'un résultat,") {
 
     val resultService = ResultService.build
+    val viewerId = ViewerId(42)
     val result = Result(
       46,
       76,
@@ -38,7 +39,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     it("devrait avoir une liste de 1 résultat vu après la vision de ce résultat") {
       // keep testing the method taking an Id
       // because stable APIs are nice
-      resultService.seenResult(ResultId(result.id), ViewerId(42))
+      resultService.seenResult(ResultId(result.id), viewerId)
       resultService.getAllResultSeen.length shouldEqual 1
       resultService.getAllResult.head.isSeen shouldEqual true
     }
@@ -52,6 +53,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     val result_1 = Result(46, 76, List(42), "test")
     val result_2 = result_1.copy(id = result_1.id + 1)
     val result_3 = result_1.copy(id = result_1.id + 2)
+    val viewerId = ViewerId(42)
     resultService.addResult(result_1)
     resultService.addResult(result_2)
     resultService.addResult(result_3)
@@ -65,27 +67,27 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 1 résultat vu dans la liste après la vision d'un résultat") {
-      resultService.seenResult(result_1, ViewerId(42))
+      resultService.seenResult(result_1, viewerId)
       resultService.getAllResultSeen.length shouldEqual 1
     }
 
     it("devrait avoir les 3 résultats vus dans la liste après qu'ils soient tous vus.") {
-      resultService.seenResult(result_1, ViewerId(42))
-      resultService.seenResult(result_2, ViewerId(42))
-      resultService.seenResult(result_3, ViewerId(42))
+      resultService.seenResult(result_1, viewerId)
+      resultService.seenResult(result_2, viewerId)
+      resultService.seenResult(result_3, viewerId)
       resultService.getAllResultSeen.length shouldEqual 3
     }
 
     it("devrait n'avoir plus que 2 résultats vus dans la liste après qu'ils soient tous vus puis 1 ou la vue est enlevée") {
       resultService.getAllResultSeen.length shouldEqual 3
-      resultService.unseenResult(result_1.id)
+      resultService.unseenResult(ResultId(result_1.id), viewerId)
       resultService.getAllResultSeen.length shouldEqual 2
 
     }
 
     it("ne devrait pas planter après la vision d'un résultat non ajouté") {
       val notAddedResult = result_1.copy(id = result_1.id + 42)
-      noException should be thrownBy resultService.seenResult(notAddedResult, ViewerId(42))
+      noException should be thrownBy resultService.seenResult(notAddedResult, viewerId)
     }
 
   }
@@ -98,6 +100,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     val result_2 = result_1.copy(id = result_1.id + 1)
     Thread.sleep(1)
     val result_3 = result_1.copy(id = result_1.id + 2)
+    val viewerId = ViewerId(42)
     resultService.addResult(result_3)
     resultService.addResult(result_2)
     resultService.addResult(result_1)
@@ -107,7 +110,6 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 1 event a la date de maintenant quand 1 résultat est vu, avec le viewer id") {
-      val viewerId = ViewerId(42)
       resultService.seenResult(result_1, viewerId)
       resultService.getAllResultSeen.length shouldEqual 1
       resultService.getAllResultSeen.head.isSeen shouldEqual true
@@ -118,7 +120,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 2 events avec 2 dates différentes après la vision d'un résultat puis la suppression de la vision") {
-      resultService.unseenResult(result_1.id)
+      resultService.unseenResult(ResultId(result_1.id), viewerId)
       resultService.getAllResultSeen.length shouldEqual 0
       val seen_event = result_1.seenStateEvents.head
       val unseen_event = result_1.seenStateEvents.last
@@ -142,9 +144,9 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     it("should count the number of Seen events") {
       resultService.numberOfEventSeen shouldEqual 1
-      resultService.seenResult(result_1, ViewerId(42))
+      resultService.seenResult(result_1, viewerId)
       resultService.numberOfEventSeen shouldEqual 2
-      resultService.seenResult(result_2, ViewerId(42))
+      resultService.seenResult(result_2, viewerId)
       resultService.numberOfEventSeen shouldEqual 3
     }
   }

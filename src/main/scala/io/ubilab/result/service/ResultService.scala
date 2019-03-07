@@ -29,8 +29,8 @@ class ResultService {
       )
   }
 
-  def unseenResult(idResult:Int) =
-    results_store.find(_.id==idResult).foreach(_.seenStateEvents += Unseen(0, new java.util.Date()))
+  def unseenResult(result_id:ResultId, viewerId: ViewerId) =
+    results_store.find(_.id==result_id.id).foreach(_.seenStateEvents += Unseen(0, new java.util.Date()))
 
   def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
 
