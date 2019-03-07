@@ -126,6 +126,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
       val unseen_event = result_1.seenStateEvents.last
       seen_event shouldBe a[Seen]
       unseen_event shouldBe a[Unseen]
+      unseen_event.idOwner shouldEqual viewerId.id
       seen_event.createdAt shouldNot be theSameInstanceAs unseen_event.createdAt
     }
 
