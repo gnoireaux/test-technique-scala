@@ -17,7 +17,7 @@ class ResultService {
 
   def seenResult(result: Result, viewerId: ViewerId): Unit = seenResult(ResultId(result.id), viewerId)
   def seenResult(result_id: ResultId, viewerId: ViewerId): Unit =
-    results_store.find(_.id==result_id.idResult)
+    results_store.find(_.id==result_id.id)
       .foreach(_.seenStateEvents += Seen(viewerId.id, new java.util.Date()))
 
   def unseenResult(idResult:Int) =
