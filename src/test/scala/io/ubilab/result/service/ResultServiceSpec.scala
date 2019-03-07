@@ -91,14 +91,12 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
 
   describe("Step 4 : Après l'ajout de 3 résultats (events)") {
-    val thursday = Created(0, new java.util.Date(0, 1, 1))
-    val friday = Created(0, new java.util.Date(0, 1, 2))
-    val saturday = Created(0, new java.util.Date(0, 1, 3))
-
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), "test", created = thursday)
-    val result_2 = result_1.copy(id = result_1.id + 1, created = friday)
-    val result_3 = result_1.copy(id = result_1.id + 2, created = saturday)
+    val result_1 = Result(46, 76, List(42), "test")
+    Thread.sleep(1) // need the time of creation in milliseconds to be different for comparison
+    val result_2 = result_1.copy(id = result_1.id + 1)
+    Thread.sleep(1)
+    val result_3 = result_1.copy(id = result_1.id + 2)
     resultService.addResult(result_3)
     resultService.addResult(result_2)
     resultService.addResult(result_1)
@@ -147,6 +145,12 @@ class ResultServiceSpec extends FunSpec with Matchers {
       result.created shouldBe a[Created]
       result.events.length shouldEqual 1
       result.events.head shouldBe a[Created]
+    }
+    it("assuming creator == owner") {
+      val result = Result(46, 76, List(42), "test")
+      result.created.idOwner shouldEqual result.idOwner
+      // data is in two places but they are built in agreement.
+      // and the two places being immutable they should remain in agreement.
     }
   }
 

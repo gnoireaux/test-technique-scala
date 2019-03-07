@@ -19,8 +19,8 @@ case class Result(id:              Int,
                   idOwner:         Int,
                   idRecipients:    List[Int],
                   contentOfResult: String,
-                  created:         Created = Created(0, new java.util.Date()),
                   var received:    Option[Received] = None) {
+  val             created = Created(idOwner, new java.util.Date())
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // ListBuffer created as default value for an arg in case class' constructor :
   //              objects share the same instance !
