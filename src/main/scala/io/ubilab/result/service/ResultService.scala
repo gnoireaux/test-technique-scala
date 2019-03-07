@@ -32,7 +32,7 @@ class ResultService {
     results_store.filter(!_.isSeen).toList
 
   def numberOfEventSeen:Int =
-    (results_store.map(_.seenStateEvents.count(_.isInstanceOf[Seen]))).sum
+    results_store.map(_.seenStateEvents.count(_.isInstanceOf[Seen])).sum
 }
 
 object ResultService {
