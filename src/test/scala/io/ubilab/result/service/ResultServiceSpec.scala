@@ -39,7 +39,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     it("devrait avoir une liste de 1 résultat vu après la vision de ce résultat") {
       // keep testing the method taking an Id
       // because stable APIs are nice
-      resultService.seenResult(ResultId(result), viewerId)
+      resultService.seenResult(result, viewerId)
       resultService.getAllResultSeen.length shouldEqual 1
       resultService.getAllResult.head.isSeen shouldEqual true
     }
@@ -80,7 +80,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     it("devrait n'avoir plus que 2 résultats vus dans la liste après qu'ils soient tous vus puis 1 ou la vue est enlevée") {
       resultService.getAllResultSeen.length shouldEqual 3
-      resultService.unseenResult(ResultId(result_1), viewerId)
+      resultService.unseenResult(result_1, viewerId)
       resultService.getAllResultSeen.length shouldEqual 2
 
     }
@@ -89,7 +89,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
       val notAddedResult = result_1.copy(id = result_1.id + 42)
       noException should be thrownBy resultService.seenResult(notAddedResult, viewerId)
       // assuming it is true also for unseeing a result
-      noException should be thrownBy resultService.unseenResult(ResultId(notAddedResult), viewerId)
+      noException should be thrownBy resultService.unseenResult(notAddedResult, viewerId)
     }
 
   }
@@ -123,7 +123,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 2 events avec 2 dates différentes après la vision d'un résultat puis la suppression de la vision") {
-      resultService.unseenResult(ResultId(result_1), viewerId)
+      resultService.unseenResult(result_1, viewerId)
       resultService.getAllResultSeen.length shouldEqual 0
       val seen_event = result_1.seenStateEvents.head
       val unseen_event = result_1.seenStateEvents.last
@@ -152,7 +152,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
       result_1.seenStateEvents.length shouldEqual 2
 
-      val response_to_unseen = resultService.unseenResult(ResultId(result_1), viewerId_not_recipient)
+      val response_to_unseen = resultService.unseenResult(result_1, viewerId_not_recipient)
       response_to_unseen shouldBe a[Failure[_]]
       response_to_unseen.asInstanceOf[Failure[_]].exception.getMessage should
         include (viewerId_not_recipient.id.toString)
@@ -169,11 +169,11 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
     it("should count the people having seen a result (user having unseen result does not count)") {
       resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 0
-      resultService.seenResult(ResultId(result_3), viewerId)
+      resultService.seenResult(result_3, viewerId)
       resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 1
-      resultService.unseenResult(ResultId(result_3), viewerId)
+      resultService.unseenResult(result_3, viewerId)
       resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 0
-      resultService.seenResult(ResultId(result_3), another_viewerId)
+      resultService.seenResult(result_3, another_viewerId)
       resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 1
     }
   }
