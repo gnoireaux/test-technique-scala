@@ -39,15 +39,15 @@ case class Result(id:              Int,
   def             numberOfPeopleSeen: Int =
     seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
 
-  def seenBy(viewerId: ViewerId): Try[Unit] = viewEvent(viewerId, Seen(viewerId.id))
+  def seenBy(viewerId: ViewerId): Try[Unit] = recordViewEvent(Seen(viewerId.id))
 
-  def unseenBy(viewerId: ViewerId): Try[Unit] = viewEvent(viewerId, Unseen(viewerId.id))
+  def unseenBy(viewerId: ViewerId): Try[Unit] = recordViewEvent(Unseen(viewerId.id))
 
-  private def viewEvent(viewerId: ViewerId, event: SeenStateEvent): Try[Unit] = {
-    if (idRecipients.contains(viewerId.id))
+  private def recordViewEvent(event: SeenStateEvent): Try[Unit] = {
+    if (idRecipients.contains(event.idOwner))
       Success(_seenStateEvents += event)
     else
-      Failure(new IllegalArgumentException(s"Viewer $viewerId attempted to $event $this while not being among recipients."))
+      Failure(new IllegalArgumentException(s"Viewer ${event.idOwner} attempted to $event $this while not being among recipients."))
   }
 }
 object Result {
