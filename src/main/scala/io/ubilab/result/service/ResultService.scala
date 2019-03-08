@@ -19,15 +19,15 @@ class ResultService {
     }
   }
 
-  private[service] def seenResult(result: Result, viewerId: ViewerId): Try[Unit] =
-    seenResult(ResultId(result.id), viewerId)
   def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] =
     findResultAndRecordEvent(result_id, Seen(viewerId.id))
+  private[service] def seenResult(result: Result, viewerId: ViewerId): Try[Unit] =
+    seenResult(ResultId(result.id), viewerId)
 
-  private[service] def unseenResult(result: Result, viewerId: ViewerId): Try[Unit] =
-    unseenResult(ResultId(result.id), viewerId)
   def unseenResult(result_id:ResultId, viewerId: ViewerId): Try[Unit] =
     findResultAndRecordEvent(result_id, Unseen(viewerId.id))
+  private[service] def unseenResult(result: Result, viewerId: ViewerId): Try[Unit] =
+    unseenResult(ResultId(result.id), viewerId)
 
   private def findResultAndRecordEvent(resultId: ResultId, event: SeenStateEvent): Try[Unit] = {
     results_store.find(_.id==resultId.id) match {
