@@ -49,7 +49,7 @@ class ResultService {
   def numberOfPeopleSeen(resultId: ResultId):Int = {
     results_store.find(_.id==resultId.id) match {
       case Some(result) =>
-        result.seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
+        result.numberOfPeopleSeen
       case None => 0
     }
   }

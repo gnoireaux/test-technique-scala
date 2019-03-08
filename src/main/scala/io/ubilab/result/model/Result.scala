@@ -37,6 +37,8 @@ case class Result(id:              Int,
     case None => List[EventResult](created)
   }) ++ seenStateEvents.toList.asInstanceOf[List[EventResult]]
   def             isSeen:          Boolean = Result.endsInASeen(seenStateEvents.toList)
+  def             numberOfPeopleSeen: Int =
+    seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
 }
 object Result {
   def endsInASeen(seenStateEvents: List[SeenStateEvent]): Boolean = seenStateEvents.lastOption match {
