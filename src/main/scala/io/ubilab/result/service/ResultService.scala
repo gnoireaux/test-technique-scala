@@ -47,11 +47,7 @@ class ResultService {
     results_store.map(_.seenStateEvents.count(_.isInstanceOf[Seen])).sum
 
   def numberOfPeopleSeen(resultId: ResultId):Int = {
-    results_store.find(_.id==resultId.id) match {
-      case Some(result) =>
-        result.numberOfPeopleSeen
-      case None => 0
-    }
+    results_store.find(_.id==resultId.id).map(_.numberOfPeopleSeen).getOrElse(0)
   }
 }
 
