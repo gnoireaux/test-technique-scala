@@ -6,16 +6,17 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
 class Logger {
-  def error(msg:String) = println(s"[io.ubilab.result.service.error] $msg")
+  def error(msg:String) : Unit = println(s"[service.error] $msg")
 }
 class ResultService {
   private val results_store = ListBuffer[Result]()
   private val logger        = new Logger
 
   def addResult(result:Result): Try[ListBuffer[Result]] = Try {
-    results_store.exists(_.id == result.id) match {
-      case true => throw new IllegalArgumentException("A result already exists with the same id.")
-      case false => results_store += result
+    if (results_store.exists(_.id == result.id)) {
+      throw new IllegalArgumentException("A result already exists with the same id.")
+    } else {
+      results_store += result
     }
   }
 
@@ -31,12 +32,14 @@ class ResultService {
 
   private def findResultAndRecordEvent(resultId: ResultId, event: SeenStateEvent): Try[Unit] = {
     results_store.find(_.id==resultId.id) match {
-      case Some(result) => result.recordViewEvent(event)
-      case None => {
-        val e = new IllegalArgumentException(s"Did not find result $resultId for user ${event.idOwner}. Was requesting $event.")
+      case Some(result) => result.recordViewEvent(event) match {
+        case f @ Failure(e) => logger.error(e.getMessage); f
+        case s @ Success(v) => s
+      }
+      case None =>
+        val e = new IllegalArgumentException(s"Did not find result $resultId for ${event.idOwner}. Was requesting $event.")
         logger.error(e.getMessage)
         Failure(e)
-      }
     }
   }
 

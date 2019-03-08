@@ -1,5 +1,5 @@
 package io.ubilab.result.model
-import io.ubilab.result.service.Logger
+
 import java.util.Date
 
 import scala.collection.mutable.ListBuffer
@@ -28,18 +28,16 @@ case class Result(id:              Int,
                   var received:    Option[Received] = None) {
   val             created =        Created(idOwner)
 
-  val             logger  =        new Logger
-
   private val     _seenStateEvents = ListBuffer[SeenStateEvent]()
   def             seenStateEvents: List[SeenStateEvent] = _seenStateEvents.toList
 
   def             events:          List[EventResult] =
     List[Option[EventResult]](Some(created), received).flatten ++ seenStateEvents
 
-  def             isSeen:          Boolean = Result.endsInASeen(seenStateEvents.toList)
+  def             isSeen:          Boolean = Result.endsInASeen(seenStateEvents)
 
   def             numberOfPeopleSeen: Int =
-    seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
+    seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2))
 
   def seenBy(viewerId: ViewerId): Try[Unit] = recordViewEvent(Seen(viewerId.id))
 
@@ -48,11 +46,8 @@ case class Result(id:              Int,
   def recordViewEvent(event: SeenStateEvent): Try[Unit] = {
     if (idRecipients.contains(event.idOwner))
       Success(_seenStateEvents += event)
-    else {
-      val e = new IllegalArgumentException(s"Viewer ${event.idOwner} attempted to $event $this while not being among recipients.")
-      logger.error(e.getMessage)
-      Failure(e)
-    }
+    else
+      Failure(new IllegalArgumentException(s"Viewer ${event.idOwner} attempted to $event $this while not being among recipients."))
   }
 }
 object Result {
