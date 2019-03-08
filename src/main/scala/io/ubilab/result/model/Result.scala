@@ -31,7 +31,7 @@ case class Result(id:              Int,
   def             seenStateEvents: ListBuffer[SeenStateEvent] = _seenStateEvents
 
   def             events:          List[EventResult] =
-    List[Option[EventResult]](Some(created), received).flatten ++ seenStateEvents.toList
+    List[Option[EventResult]](Some(created), received).flatten ++ seenStateEvents
 
   def             isSeen:          Boolean = Result.endsInASeen(seenStateEvents.toList)
 
