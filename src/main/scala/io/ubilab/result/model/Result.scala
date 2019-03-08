@@ -37,6 +37,8 @@ case class Result(id:              Int,
 
   def             numberOfPeopleSeen: Int =
     seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
+
+  def unseenBy(viewerId: ViewerId) = _seenStateEvents += Unseen(viewerId.id)
 }
 object Result {
   def endsInASeen(seenStateEvents: List[SeenStateEvent]): Boolean = seenStateEvents.lastOption match {

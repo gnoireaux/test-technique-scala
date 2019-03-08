@@ -31,7 +31,7 @@ class ResultService {
 
   def unseenResult(result_id:ResultId, viewerId: ViewerId) =
     results_store.find(_.id==result_id.id)
-      .foreach(_.seenStateEvents += Unseen(viewerId.id))
+      .foreach(_.unseenBy(viewerId))
 
   def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
 
