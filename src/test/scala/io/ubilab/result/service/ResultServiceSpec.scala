@@ -39,7 +39,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     it("devrait avoir une liste de 1 résultat vu après la vision de ce résultat") {
       // keep testing the method taking an Id
       // because stable APIs are nice
-      resultService.seenResult(ResultId(result.id), viewerId)
+      resultService.seenResult(ResultId(result), viewerId)
       resultService.getAllResultSeen.length shouldEqual 1
       resultService.getAllResult.head.isSeen shouldEqual true
     }
@@ -80,7 +80,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     it("devrait n'avoir plus que 2 résultats vus dans la liste après qu'ils soient tous vus puis 1 ou la vue est enlevée") {
       resultService.getAllResultSeen.length shouldEqual 3
-      resultService.unseenResult(ResultId(result_1.id), viewerId)
+      resultService.unseenResult(ResultId(result_1), viewerId)
       resultService.getAllResultSeen.length shouldEqual 2
 
     }
@@ -120,7 +120,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
     }
 
     it("devrait avoir 2 events avec 2 dates différentes après la vision d'un résultat puis la suppression de la vision") {
-      resultService.unseenResult(ResultId(result_1.id), viewerId)
+      resultService.unseenResult(ResultId(result_1), viewerId)
       resultService.getAllResultSeen.length shouldEqual 0
       val seen_event = result_1.seenStateEvents.head
       val unseen_event = result_1.seenStateEvents.last
