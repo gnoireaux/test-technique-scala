@@ -39,6 +39,13 @@ case class Result(id:              Int,
   def             numberOfPeopleSeen: Int =
     seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
 
+  def seenBy(viewerId: ViewerId): Try[Unit] = Try {
+    if (idRecipients.contains(viewerId.id))
+      _seenStateEvents += Seen(viewerId.id)
+    else
+      throw new IllegalArgumentException(s"Viewer $viewerId attempted to see $this while not being among recipients.")
+  }
+
   def unseenBy(viewerId: ViewerId): Try[Unit] = Try {
     if (idRecipients.contains(viewerId.id))
       _seenStateEvents += Unseen(viewerId.id)

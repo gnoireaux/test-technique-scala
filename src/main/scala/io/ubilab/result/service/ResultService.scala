@@ -16,18 +16,11 @@ class ResultService {
   }
 
   def seenResult(result: Result, viewerId: ViewerId): Try[Unit] = seenResult(ResultId(result.id), viewerId)
-  def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] = Try {
-    results_store.find(_.id==result_id.id)
-      .foreach(
-        result => result.idRecipients.find(_ == viewerId.id) match {
-          case Some(_) => result.seenStateEvents += Seen(viewerId.id)
-          case None => {
-            println(s"Viewer ${viewerId} tried to access result $result while not being a recipient.")
-            throw new IllegalArgumentException(s"Viewer $viewerId attempted to see $result while not being among recipients.")
-          }
-        }
-      )
-  }
+  def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] =
+    results_store.find(_.id==result_id.id) match {
+      case Some(result) => result.seenBy(viewerId)
+      case None => throw new IllegalArgumentException(s"Did not find result with $result_id.")
+    }
 
   def unseenResult(result_id:ResultId, viewerId: ViewerId): Try[Unit] =
     results_store.find(_.id==result_id.id) match {
