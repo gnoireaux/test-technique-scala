@@ -29,7 +29,7 @@ case class Result(id:              Int,
   val             created =        Created(idOwner)
 
   private val     _seenStateEvents = ListBuffer[SeenStateEvent]()
-  def             seenStateEvents: ListBuffer[SeenStateEvent] = _seenStateEvents
+  def             seenStateEvents: List[SeenStateEvent] = _seenStateEvents.toList
 
   def             events:          List[EventResult] =
     List[Option[EventResult]](Some(created), received).flatten ++ seenStateEvents
