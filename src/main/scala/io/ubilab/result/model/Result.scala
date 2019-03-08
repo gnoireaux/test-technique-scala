@@ -15,10 +15,10 @@ sealed trait EventResult {
   def createdAt: Date
 }
 sealed trait SeenStateEvent extends EventResult
-final case class Created(idOwner: Int, createdAt: Date = new java.util.Date()) extends EventResult
-final case class Received(idOwner: Int, createdAt: Date = new java.util.Date()) extends EventResult
-final case class Seen(idOwner: Int, createdAt: Date = new java.util.Date()) extends EventResult with SeenStateEvent
-final case class Unseen(idOwner: Int, createdAt: Date = new java.util.Date()) extends EventResult with SeenStateEvent
+final case class Created(idOwner: Int, createdAt: Date = new Date()) extends EventResult
+final case class Received(idOwner: Int, createdAt: Date = new Date()) extends EventResult
+final case class Seen(idOwner: Int, createdAt: Date = new Date()) extends EventResult with SeenStateEvent
+final case class Unseen(idOwner: Int, createdAt: Date = new Date()) extends EventResult with SeenStateEvent
 
 case class Result(id:              Int,
                   idOwner:         Int,
@@ -26,17 +26,15 @@ case class Result(id:              Int,
                   contentOfResult: String,
                   var received:    Option[Received] = None) {
   val             created =        Created(idOwner)
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // ListBuffer created as default value for an arg in case class' constructor :
-  //              objects share the same instance !
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   private val     _seenStateEvents = ListBuffer[SeenStateEvent]()
   def             seenStateEvents: ListBuffer[SeenStateEvent] = _seenStateEvents
-  def             events:          List[EventResult] = (received match {
-    case Some(received) => List[EventResult](created, received)
-    case None => List[EventResult](created)
-  }) ++ seenStateEvents.toList.asInstanceOf[List[EventResult]]
+
+  def             events:          List[EventResult] =
+    List[Option[EventResult]](Some(created), received).flatten ++ seenStateEvents.toList
+
   def             isSeen:          Boolean = Result.endsInASeen(seenStateEvents.toList)
+
   def             numberOfPeopleSeen: Int =
     seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
 }
