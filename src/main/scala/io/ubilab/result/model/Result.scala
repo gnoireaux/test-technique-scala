@@ -1,5 +1,5 @@
 package io.ubilab.result.model
-
+import io.ubilab.result.service.Logger
 import java.util.Date
 
 import scala.collection.mutable.ListBuffer
@@ -28,6 +28,8 @@ case class Result(id:              Int,
                   var received:    Option[Received] = None) {
   val             created =        Created(idOwner)
 
+  val             logger  =        new Logger
+
   private val     _seenStateEvents = ListBuffer[SeenStateEvent]()
   def             seenStateEvents: List[SeenStateEvent] = _seenStateEvents.toList
 
@@ -46,8 +48,11 @@ case class Result(id:              Int,
   def recordViewEvent(event: SeenStateEvent): Try[Unit] = {
     if (idRecipients.contains(event.idOwner))
       Success(_seenStateEvents += event)
-    else
-      Failure(new IllegalArgumentException(s"Viewer ${event.idOwner} attempted to $event $this while not being among recipients."))
+    else {
+      val e = new IllegalArgumentException(s"Viewer ${event.idOwner} attempted to $event $this while not being among recipients.")
+      logger.error(e.getMessage)
+      Failure(e)
+    }
   }
 }
 object Result {

@@ -6,7 +6,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
 class Logger {
-  def error(msg:String) = println(msg)
+  def error(msg:String) = println(s"[io.ubilab.result.service.error] $msg")
 }
 class ResultService {
   private val results_store = ListBuffer[Result]()
@@ -33,7 +33,7 @@ class ResultService {
     results_store.find(_.id==resultId.id) match {
       case Some(result) => result.recordViewEvent(event)
       case None => {
-        val e = new IllegalArgumentException(s"Did not find result $resultId for ${event.idOwner}. Was requesting $event.")
+        val e = new IllegalArgumentException(s"Did not find result $resultId for user ${event.idOwner}. Was requesting $event.")
         logger.error(e.getMessage)
         Failure(e)
       }
