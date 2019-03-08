@@ -165,6 +165,18 @@ class ResultServiceSpec extends FunSpec with Matchers {
       // data is in two places but they are built in agreement.
       // and the two places being immutable they should remain in agreement.
     }
+    it("should be able to tell if a list of SeenStateEvents ends in a Seen event") {
+      val no_event = List[SeenStateEvent]()
+      val one_seen = List[SeenStateEvent](Seen(0, new java.util.Date()))
+      val two_seen = List[SeenStateEvent](
+        Seen(0, new java.util.Date()), Seen(0, new java.util.Date()))
+      val seen_then_unseen = List[SeenStateEvent](
+        Seen(0, new java.util.Date()), Unseen(0, new java.util.Date()))
+      Result.endsInASeen(no_event) shouldEqual false
+      Result.endsInASeen(one_seen) shouldEqual true
+      Result.endsInASeen(two_seen) shouldEqual true
+      Result.endsInASeen(seen_then_unseen) shouldEqual false
+    }
   }
 
   describe("N'hésitez pas a proposer de nouveaux tests") {}

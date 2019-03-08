@@ -36,8 +36,11 @@ case class Result(id:              Int,
     case Some(received) => List[EventResult](created, received)
     case None => List[EventResult](created)
   }) ++ seenStateEvents.toList.asInstanceOf[List[EventResult]]
-  def             isSeen:          Boolean = seenStateEvents.lastOption match {
-    case Some(event)  => event.isInstanceOf[Seen]
+  def             isSeen:          Boolean = Result.endsInASeen(seenStateEvents.toList)
+}
+object Result {
+  def endsInASeen(seenStateEvents: List[SeenStateEvent]): Boolean = seenStateEvents.lastOption match {
+    case Some(event) => event.isInstanceOf[Seen]
     case None => false
   }
 }
