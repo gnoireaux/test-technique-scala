@@ -3,7 +3,7 @@ package io.ubilab.result.model
 import java.util.Date
 
 import scala.collection.mutable.ListBuffer
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 case class ResultId(id: Int)
 object ResultId {
@@ -39,18 +39,15 @@ case class Result(id:              Int,
   def             numberOfPeopleSeen: Int =
     seenStateEvents.groupBy(_.idOwner).count(x => Result.endsInASeen(x._2.toList))
 
-  def seenBy(viewerId: ViewerId): Try[Unit] = Try {
-    if (idRecipients.contains(viewerId.id))
-      _seenStateEvents += Seen(viewerId.id)
-    else
-      throw new IllegalArgumentException(s"Viewer $viewerId attempted to see $this while not being among recipients.")
-  }
+  def seenBy(viewerId: ViewerId): Try[Unit] = viewEvent(viewerId, Seen(viewerId.id))
 
-  def unseenBy(viewerId: ViewerId): Try[Unit] = Try {
+  def unseenBy(viewerId: ViewerId): Try[Unit] = viewEvent(viewerId, Unseen(viewerId.id))
+
+  private def viewEvent(viewerId: ViewerId, event: SeenStateEvent): Try[Unit] = {
     if (idRecipients.contains(viewerId.id))
-      _seenStateEvents += Unseen(viewerId.id)
+      Success(_seenStateEvents += event)
     else
-      throw new IllegalArgumentException(s"Viewer $viewerId attempted to unsee $this while not being among recipients.")
+      Failure(new IllegalArgumentException(s"Viewer $viewerId attempted to $event $this while not being among recipients."))
   }
 }
 object Result {
