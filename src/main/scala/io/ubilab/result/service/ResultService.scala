@@ -21,24 +21,21 @@ class ResultService {
 
   def seenResult(result: Result, viewerId: ViewerId): Try[Unit] = seenResult(ResultId(result.id), viewerId)
   def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] =
-    results_store.find(_.id==result_id.id) match {
-      case Some(result) => result.seenBy(viewerId)
-      case None => {
-        val e = new IllegalArgumentException(s"Did not find result $result_id for $viewerId. Was requesting `seen`.")
-        logger.error(e.getMessage)
-        Failure(e)
-      }
-    }
+    findResultAndRecordEvent(result_id, Seen(viewerId.id))
 
   def unseenResult(result_id:ResultId, viewerId: ViewerId): Try[Unit] =
-    results_store.find(_.id==result_id.id) match {
-      case Some(result) => result.unseenBy(viewerId)
+    findResultAndRecordEvent(result_id, Unseen(viewerId.id))
+
+  private def findResultAndRecordEvent(resultId: ResultId, event: SeenStateEvent): Try[Unit] = {
+    results_store.find(_.id==resultId.id) match {
+      case Some(result) => result.recordViewEvent(event)
       case None => {
-        val e = new IllegalArgumentException(s"Did not find result $result_id for $viewerId. Was requesting `unseen`.")
+        val e = new IllegalArgumentException(s"Did not find result $resultId for ${event.idOwner}. Was requesting $event.")
         logger.error(e.getMessage)
         Failure(e)
       }
     }
+  }
 
   def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
 

@@ -43,7 +43,7 @@ case class Result(id:              Int,
 
   def unseenBy(viewerId: ViewerId): Try[Unit] = recordViewEvent(Unseen(viewerId.id))
 
-  private def recordViewEvent(event: SeenStateEvent): Try[Unit] = {
+  def recordViewEvent(event: SeenStateEvent): Try[Unit] = {
     if (idRecipients.contains(event.idOwner))
       Success(_seenStateEvents += event)
     else
