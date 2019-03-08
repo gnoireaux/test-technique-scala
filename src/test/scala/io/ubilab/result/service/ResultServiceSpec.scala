@@ -88,6 +88,8 @@ class ResultServiceSpec extends FunSpec with Matchers {
     it("ne devrait pas planter après la vision d'un résultat non ajouté") {
       val notAddedResult = result_1.copy(id = result_1.id + 42)
       noException should be thrownBy resultService.seenResult(notAddedResult, viewerId)
+      // assuming it is true also for unseeing a result
+      noException should be thrownBy resultService.unseenResult(ResultId(notAddedResult), viewerId)
     }
 
   }

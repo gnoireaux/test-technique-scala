@@ -5,8 +5,12 @@ import io.ubilab.result.model._
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
+class Logger {
+  def error(msg:String) = println(msg)
+}
 class ResultService {
   private val results_store = ListBuffer[Result]()
+  private val logger        = new Logger
 
   def addResult(result:Result): Try[ListBuffer[Result]] = Try {
     results_store.exists(_.id == result.id) match {
@@ -19,13 +23,21 @@ class ResultService {
   def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] =
     results_store.find(_.id==result_id.id) match {
       case Some(result) => result.seenBy(viewerId)
-      case None => throw new IllegalArgumentException(s"Did not find result with $result_id.")
+      case None => {
+        val e = new IllegalArgumentException(s"Did not find result $result_id for $viewerId. Was requesting `seen`.")
+        logger.error(e.getMessage)
+        Failure(e)
+      }
     }
 
   def unseenResult(result_id:ResultId, viewerId: ViewerId): Try[Unit] =
     results_store.find(_.id==result_id.id) match {
       case Some(result) => result.unseenBy(viewerId)
-      case None => throw new IllegalArgumentException(s"Did not find result with $result_id.")
+      case None => {
+        val e = new IllegalArgumentException(s"Did not find result $result_id for $viewerId. Was requesting `unseen`.")
+        logger.error(e.getMessage)
+        Failure(e)
+      }
     }
 
   def getAllResult:List[Result] = results_store.sortBy(_.created.createdAt).toList
