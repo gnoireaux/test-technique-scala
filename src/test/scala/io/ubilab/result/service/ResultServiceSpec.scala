@@ -95,12 +95,13 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
   describe("Step 4 : Après l'ajout de 3 résultats (events)") {
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), "test")
+    val result_1 = Result(46, 76, List(42,43), "test")
     Thread.sleep(1) // need the time of creation in milliseconds to be different for comparison
     val result_2 = result_1.copy(id = result_1.id + 1)
     Thread.sleep(1)
     val result_3 = result_1.copy(id = result_1.id + 2)
     val viewerId = ViewerId(42)
+    val another_viewerId = ViewerId(43)
     resultService.addResult(result_3)
     resultService.addResult(result_2)
     resultService.addResult(result_1)
@@ -149,6 +150,15 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.numberOfEventSeen shouldEqual 2
       resultService.seenResult(result_2, viewerId)
       resultService.numberOfEventSeen shouldEqual 3
+    }
+    it("should count the people having seen a result (user having unseen result does not count)") {
+      resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 0
+      resultService.seenResult(ResultId(result_3), viewerId)
+      resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 1
+      resultService.unseenResult(ResultId(result_3), viewerId)
+      resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 0
+      resultService.seenResult(ResultId(result_3), another_viewerId)
+      resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 1
     }
   }
 
