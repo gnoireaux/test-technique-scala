@@ -18,8 +18,8 @@ sealed trait EventResult {
 sealed trait SeenStateEvent extends EventResult
 final case class Created(idOwner:  Int, createdAt: Date = new Date()) extends EventResult
 final case class Received(idOwner: Int, createdAt: Date = new Date()) extends EventResult
-final case class Seen(idOwner:     Int, createdAt: Date = new Date()) extends EventResult with SeenStateEvent
-final case class Unseen(idOwner:   Int, createdAt: Date = new Date()) extends EventResult with SeenStateEvent
+final case class Seen(idOwner:     Int, createdAt: Date = new Date()) extends SeenStateEvent
+final case class Unseen(idOwner:   Int, createdAt: Date = new Date()) extends SeenStateEvent
 
 case class Result(id:              Int,
                   idOwner:         Int,
