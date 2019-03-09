@@ -14,7 +14,9 @@ class ResultService {
 
   def addResult(result: Result): Try[ListBuffer[Result]] = Try {
     if (results_store.exists(_.id == result.id)) {
-      throw new IllegalArgumentException("A result already exists with the same id.")
+      val e = new IllegalArgumentException("A result already exists with the same id.")
+      logger.error(e.getMessage)
+      throw e
     } else {
       results_store += result
     }
