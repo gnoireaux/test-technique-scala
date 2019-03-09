@@ -17,6 +17,8 @@ lazy val root = (project in file("."))
 
 parallelExecution in Test := false
 
+wartremoverWarnings ++= Warts.all
+
 //scalacOptions ++= Seq(
 //  "-deprecation",
 //  "-encoding",
