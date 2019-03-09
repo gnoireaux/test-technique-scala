@@ -5,11 +5,12 @@ import java.util.Date
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
-case class ResultId(id: Int)
+// made the class final in case someone using scala < 2.11 would extend it with another case class.
+final case class ResultId(id: Int)
 object ResultId {
   def apply(result: Result): ResultId = ResultId(result.id)
 }
-case class ViewerId(id: Int) // would probably not exist in a real system, but I've got to stop somewhere, scope-wise
+final case class ViewerId(id: Int) // would probably not exist in a real system, but I've got to stop somewhere, scope-wise
 
 sealed trait EventResult {
   def idOwner: Int
@@ -21,11 +22,11 @@ final case class Received(idOwner: Int, createdAt: Date = new Date()) extends Ev
 final case class Seen(idOwner:     Int, createdAt: Date = new Date()) extends EventResult with SeenStateEvent
 final case class Unseen(idOwner:   Int, createdAt: Date = new Date()) extends EventResult with SeenStateEvent
 
-case class Result(id:              Int,
-                  idOwner:         Int,
-                  idRecipients:    List[Int],
-                  contentOfResult: String,
-                  var received:    Option[Received] = None) {
+final case class Result(id:              Int,
+                        idOwner:         Int,
+                        idRecipients:    List[Int],
+                        contentOfResult: String,
+                        var received:    Option[Received] = None) {
   val created = Created(idOwner)
 
   private val _seenStateEvents              = ListBuffer[SeenStateEvent]()
