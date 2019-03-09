@@ -20,7 +20,7 @@ class ResultServiceSpec extends FunSpec with Matchers {
   describe("Step 2 : Après l'ajout d'un résultat,") {
 
     val resultService = ResultService.build
-    val viewerId = ViewerId(42)
+    val viewerId      = ViewerId(42)
     val result = Result(
       46,
       76,
@@ -50,10 +50,10 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
     // init le service avec 3 résultats
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42), "test")
-    val result_2 = result_1.copy(id = result_1.id + 1)
-    val result_3 = result_1.copy(id = result_1.id + 2)
-    val viewerId = ViewerId(42)
+    val result_1      = Result(46, 76, List(42), "test")
+    val result_2      = result_1.copy(id = result_1.id + 1)
+    val result_3      = result_1.copy(id = result_1.id + 2)
+    val viewerId      = ViewerId(42)
     resultService.addResult(result_1)
     resultService.addResult(result_2)
     resultService.addResult(result_3)
@@ -78,7 +78,8 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.getAllResultSeen.length shouldEqual 3
     }
 
-    it("devrait n'avoir plus que 2 résultats vus dans la liste après qu'ils soient tous vus puis 1 ou la vue est enlevée") {
+    it(
+      "devrait n'avoir plus que 2 résultats vus dans la liste après qu'ils soient tous vus puis 1 ou la vue est enlevée") {
       resultService.getAllResultSeen.length shouldEqual 3
       resultService.unseenResult(result_1, viewerId)
       resultService.getAllResultSeen.length shouldEqual 2
@@ -94,15 +95,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
 
   }
 
-
   describe("Step 4 : Après l'ajout de 3 résultats (events)") {
     val resultService = ResultService.build
-    val result_1 = Result(46, 76, List(42,43), "test")
+    val result_1      = Result(46, 76, List(42, 43), "test")
     Thread.sleep(1) // need the time of creation in milliseconds to be different for comparison
     val result_2 = result_1.copy(id = result_1.id + 1)
     Thread.sleep(1)
-    val result_3 = result_1.copy(id = result_1.id + 2)
-    val viewerId = ViewerId(42)
+    val result_3         = result_1.copy(id = result_1.id + 2)
+    val viewerId         = ViewerId(42)
     val another_viewerId = ViewerId(43)
     resultService.addResult(result_3)
     resultService.addResult(result_2)
@@ -118,14 +118,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.getAllResultSeen.head.isSeen shouldEqual true
       val event: SeenStateEvent = resultService.getAllResultSeen.head.seenStateEvents.last
       event shouldBe a[Seen]
-      event.createdAt.getTime shouldBe (new java.util.Date()).getTime +- 1000
+      event.createdAt.getTime shouldBe new java.util.Date().getTime +- 1000
       event.idOwner shouldEqual viewerId.id
     }
 
     it("devrait avoir 2 events avec 2 dates différentes après la vision d'un résultat puis la suppression de la vision") {
       resultService.unseenResult(result_1, viewerId)
       resultService.getAllResultSeen.length shouldEqual 0
-      val seen_event = result_1.seenStateEvents.head
+      val seen_event   = result_1.seenStateEvents.head
       val unseen_event = result_1.seenStateEvents.last
       seen_event shouldBe a[Seen]
       unseen_event shouldBe a[Unseen]
@@ -148,14 +148,14 @@ class ResultServiceSpec extends FunSpec with Matchers {
       val response_to_seen = resultService.seenResult(result_1, viewerId_not_recipient)
       response_to_seen shouldBe a[Failure[_]]
       response_to_seen.asInstanceOf[Failure[_]].exception.getMessage should
-        include (viewerId_not_recipient.id.toString)
+        include(viewerId_not_recipient.id.toString)
 
       result_1.seenStateEvents.length shouldEqual 2
 
       val response_to_unseen = resultService.unseenResult(result_1, viewerId_not_recipient)
       response_to_unseen shouldBe a[Failure[_]]
       response_to_unseen.asInstanceOf[Failure[_]].exception.getMessage should
-        include (viewerId_not_recipient.id.toString)
+        include(viewerId_not_recipient.id.toString)
 
       result_1.seenStateEvents.length shouldEqual 2
     }
@@ -176,9 +176,12 @@ class ResultServiceSpec extends FunSpec with Matchers {
       resultService.seenResult(result_3, another_viewerId)
       resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 1
     }
+    it("knows what should happen when unseeing a non-existing event, a 'non-seen by the current un-viewer' event") {
+      "a non-existing event will have been seen 0 times"
+    }
   }
 
-  describe( "Result") {
+  describe("Result") {
     it("should from the start have a creation event") {
       val result = Result(46, 76, List(42), "test")
       result.created shouldBe a[Created]
