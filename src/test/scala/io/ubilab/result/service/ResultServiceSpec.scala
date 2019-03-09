@@ -5,6 +5,7 @@ import org.scalatest.{FunSpec, Matchers}
 
 import scala.util.{Failure, Success, Try}
 
+@SuppressWarnings(Array("org.wartremover.warts.TraversableOps", "org.wartremover.warts.AsInstanceOf"))
 class ResultServiceSpec extends FunSpec with Matchers {
 
   describe("Step 1 : initialisation du projet avec 0 et 1 résultat") {

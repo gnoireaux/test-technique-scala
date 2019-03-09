@@ -17,7 +17,7 @@ lazy val root = (project in file("."))
 
 parallelExecution in Test := false
 
-wartremoverWarnings ++= Warts.allBut(Wart.DefaultArguments)
+wartremoverWarnings ++= Warts.allBut(Wart.DefaultArguments, Wart.NonUnitStatements)
 
 //scalacOptions ++= Seq(
 //  "-deprecation",

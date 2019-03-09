@@ -47,6 +47,8 @@ class ResultService {
 
   def getAllResult: List[Result] = results_store.sortBy(_.created.createdAt).toList
 
+  // Result is built to always have at least one event. (last is ugly, lastOption would be safer)
+  @SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
   def getAllResultsLastModified: List[Result] = results_store.sortBy(_.events.last.createdAt).toList
 
   def getAllResultSeen: List[Result] =
