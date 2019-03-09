@@ -163,13 +163,6 @@ class ResultServiceSpec extends FunSpec with Matchers {
       result_1.seenStateEvents.length shouldEqual 2
     }
 
-    it("should count the number of Seen events") {
-      resultService.numberOfEventSeen shouldEqual 1
-      resultService.seenResult(result_1, viewerId)
-      resultService.numberOfEventSeen shouldEqual 2
-      resultService.seenResult(result_2, viewerId)
-      resultService.numberOfEventSeen shouldEqual 3
-    }
     it("should count the people having seen a result (user having unseen result does not count)") {
       resultService.numberOfPeopleSeen(ResultId(result_3)) shouldEqual 0
       resultService.seenResult(result_3, viewerId)

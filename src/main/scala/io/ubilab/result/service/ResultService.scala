@@ -57,9 +57,6 @@ class ResultService {
   def getAllResultUnSeen: List[Result] =
     results_store.filter(!_.isSeen).toList
 
-  def numberOfEventSeen: Int =
-    results_store.map(_.seenStateEvents.count(_.isInstanceOf[Seen])).sum
-
   def numberOfPeopleSeen(resultId: ResultId): Int = {
     results_store.find(_.id == resultId.id).map(_.numberOfPeopleSeen).getOrElse(0)
   }
