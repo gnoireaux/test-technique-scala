@@ -1,0 +1,151 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Logger</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">io.ubilab.result.service</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Logger (io.ubilab.result.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Logger</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package io.ubilab.result.service
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import io.ubilab.result.model._
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import scala.collection.mutable.ListBuffer
+<i>6</i>&nbsp;import scala.util.{Failure, Success, Try}
+<i>7</i>&nbsp;
+<b class="fc"><i>8</i>&nbsp;class Logger {</b>
+<b class="fc"><i>9</i>&nbsp;  def error(msg: String): Unit = println(s&quot;[service.error] $msg&quot;)</b>
+<i>10</i>&nbsp;}
+<b class="fc"><i>11</i>&nbsp;class ResultService {</b>
+<i>12</i>&nbsp;  private val results_store = ListBuffer[Result]()
+<i>13</i>&nbsp;  private val logger        = new Logger
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;  def addResult(result: Result): Try[Unit] = Try {
+<i>16</i>&nbsp;    if (results_store.exists(_.id == result.id)) {
+<i>17</i>&nbsp;      val e = new IllegalArgumentException(s&quot;A result already exists with the same id (${result.id}).&quot;)
+<i>18</i>&nbsp;      logger.error(e.getMessage)
+<i>19</i>&nbsp;      throw e
+<i>20</i>&nbsp;    } else {
+<i>21</i>&nbsp;      results_store += result
+<i>22</i>&nbsp;    }
+<i>23</i>&nbsp;  }
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;  def seenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] =
+<i>26</i>&nbsp;    findResultAndRecordEvent(result_id, Seen(viewerId.id))
+<i>27</i>&nbsp;  private[service] def seenResult(result: Result, viewerId: ViewerId): Try[Unit] =
+<i>28</i>&nbsp;    seenResult(ResultId(result.id), viewerId)
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;  def unseenResult(result_id: ResultId, viewerId: ViewerId): Try[Unit] =
+<i>31</i>&nbsp;    findResultAndRecordEvent(result_id, Unseen(viewerId.id))
+<i>32</i>&nbsp;  private[service] def unseenResult(result: Result, viewerId: ViewerId): Try[Unit] =
+<i>33</i>&nbsp;    unseenResult(ResultId(result.id), viewerId)
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;  private def findResultAndRecordEvent(resultId: ResultId, event: SeenStateEvent): Try[Unit] = {
+<i>36</i>&nbsp;    results_store.find(_.id == resultId.id) match {
+<i>37</i>&nbsp;      case Some(result) =&gt;
+<i>38</i>&nbsp;        result.recordViewEvent(event) match {
+<i>39</i>&nbsp;          case f @ Failure(e) =&gt; logger.error(e.getMessage); f
+<i>40</i>&nbsp;          case s @ Success(_) =&gt; s
+<i>41</i>&nbsp;        }
+<i>42</i>&nbsp;      case None =&gt;
+<i>43</i>&nbsp;        val e = new IllegalArgumentException(
+<i>44</i>&nbsp;          s&quot;Did not find result $resultId for ${event.idOwner}. Was attempting to add $event.&quot;)
+<i>45</i>&nbsp;        logger.error(e.getMessage)
+<i>46</i>&nbsp;        Failure(e)
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;  }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;  def getAllResult: List[Result] = results_store.sortBy(_.created.createdAt).toList
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;  def getAllResultsLastModified: List[Result] = results_store.sortBy(_.events.last.createdAt).toList
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;  def getAllResultSeen: List[Result] =
+<i>55</i>&nbsp;    results_store.filter(_.isSeen).toList
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;  def getAllResultUnSeen: List[Result] =
+<i>58</i>&nbsp;    results_store.filter(!_.isSeen).toList
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;  def numberOfPeopleSeen(resultId: ResultId): Int = {
+<i>61</i>&nbsp;    results_store.find(_.id == resultId.id).map(_.numberOfPeopleSeen).getOrElse(0)
+<i>62</i>&nbsp;  }
+<i>63</i>&nbsp;}
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;object ResultService {
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;  def build: ResultService = new ResultService
+<i>68</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-03-10 18:13</div>
+</div>
+</body>
+</html>
