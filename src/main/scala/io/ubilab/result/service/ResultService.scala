@@ -41,7 +41,7 @@ class ResultService {
         }
       case None =>
         val e = new IllegalArgumentException(
-          s"Did not find result $resultId for ${event.idOwner}. Was requesting $event.")
+          s"Did not find result $resultId for ${event.idOwner}. Was attempting to add $event.")
         logger.error(e.getMessage)
         Failure(e)
     }
